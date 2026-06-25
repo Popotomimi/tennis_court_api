@@ -1,0 +1,42 @@
+{
+  "name": "tennis-court-api",
+  "version": "1.0.0",
+  "description": "API para gerenciamento de torneios de tênis amadores",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio",
+    "lint": "eslint src/",
+    "format": "prettier --write src/",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^6",
+    "cors": "^2",
+    "dotenv": "^16",
+    "express": "^4",
+    "swagger-jsdoc": "^6",
+    "swagger-ui-express": "^5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "@types/cors": "^2",
+    "@types/express": "^5",
+    "@types/node": "^22",
+    "@types/swagger-jsdoc": "^6",
+    "@types/swagger-ui-express": "^4",
+    "eslint": "^9",
+    "prettier": "^3",
+    "prisma": "^6",
+    "tsx": "^4",
+    "typescript": "^5",
+    "typescript-eslint": "^8.62.0"
+  }
+}

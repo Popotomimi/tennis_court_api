@@ -1,0 +1,99 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  avatar    String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tournaments           Tournament[]           @relation("TournamentOwner")
+  tournamentParticipants TournamentParticipant[]
+  matchesPlayerOne      Match[]                @relation("PlayerOne")
+  matchesPlayerTwo      Match[]                @relation("PlayerTwo")
+  matchesWon            Match[]                @relation("MatchWinner")
+  tournamentHistory     TournamentHistory[]     @relation("TournamentChampion")
+
+  @@map("users")
+}
+
+model Tournament {
+  id          String           @id @default(uuid())
+  ownerId     String           @map("owner_id")
+  name        String
+  description String?
+  maxPlayers  Int              @map("max_players")
+  status      TournamentStatus @default(WAITING)
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @updatedAt @map("updated_at")
+
+  owner        User                   @relation("TournamentOwner", fields: [ownerId], references: [id])
+  participants TournamentParticipant[]
+  matches      Match[]
+  history      TournamentHistory?
+
+  @@map("tournaments")
+}
+
+enum TournamentStatus {
+  WAITING
+  STARTED
+  FINISHED
+}
+
+model TournamentParticipant {
+  id           String   @id @default(uuid())
+  tournamentId String   @map("tournament_id")
+  userId       String   @map("user_id")
+  joinedAt     DateTime @default(now()) @map("joined_at")
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id])
+  user       User       @relation(fields: [userId], references: [id])
+
+  @@unique([tournamentId, userId])
+  @@map("tournament_participants")
+}
+
+model Match {
+  id           String      @id @default(uuid())
+  tournamentId String      @map("tournament_id")
+  playerOneId  String      @map("player_one_id")
+  playerTwoId  String?     @map("player_two_id")
+  winnerId     String?     @map("winner_id")
+  round        Int
+  status       MatchStatus @default(PENDING)
+  createdAt    DateTime    @default(now()) @map("created_at")
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id])
+  playerOne  User       @relation("PlayerOne", fields: [playerOneId], references: [id])
+  playerTwo  User?      @relation("PlayerTwo", fields: [playerTwoId], references: [id])
+  winner     User?      @relation("MatchWinner", fields: [winnerId], references: [id])
+
+  @@map("matches")
+}
+
+enum MatchStatus {
+  PENDING
+  FINISHED
+}
+
+model TournamentHistory {
+  id           String   @id @default(uuid())
+  tournamentId String   @unique @map("tournament_id")
+  championId   String   @map("champion_id")
+  finishedAt   DateTime @map("finished_at")
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id])
+  champion   User       @relation("TournamentChampion", fields: [championId], references: [id])
+
+  @@map("tournament_history")
+}
