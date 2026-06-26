@@ -27,17 +27,35 @@ API para criação e gerenciamento de torneios de tênis amadores. Usuários pod
 
 ```
 src/
-├── config/            # Configurações (Swagger, banco, etc.)
+├── config/            # Configurações (Swagger, multer, etc.)
+│   ├── swagger.ts
+│   └── multer.ts
 ├── modules/           # Módulos da aplicação (domain-driven)
 │   ├── auth/          # Autenticação (login, registro)
+│   │   ├── dto/
+│   │   ├── auth.controller.ts
+│   │   ├── auth.service.ts
+│   │   ├── auth.repository.ts
+│   │   └── auth.routes.ts
 │   ├── users/         # Perfil do usuário
+│   │   ├── dto/
+│   │   ├── users.controller.ts
+│   │   ├── users.service.ts
+│   │   ├── users.repository.ts
+│   │   └── users.routes.ts
 │   ├── tournaments/   # CRUD de torneios
 │   ├── participants/  # Gerenciamento de participantes
 │   ├── matches/       # Partidas e resultados
 │   └── statistics/    # Estatísticas dos usuários
 ├── middlewares/        # Middlewares globais (auth, erro, etc.)
-├── shared/            # Código compartilhado (Prisma client, erros, utils)
+│   ├── auth.middleware.ts
+│   └── errorHandler.ts
+├── shared/            # Código compartilhado (Prisma client, erros, config)
+│   ├── prisma.ts
+│   ├── config.ts
+│   └── errors/
 ├── routes/            # Definição centralizada de rotas
+│   └── index.ts
 ├── app.ts             # Configuração do Express
 └── server.ts          # Inicialização do servidor
 ```
@@ -142,6 +160,11 @@ erDiagram
 - Email deve ser único
 - Senha armazenada com hash bcrypt
 - Apenas usuário autenticado pode editar próprio perfil
+- `GET /users/me` retorna dados do usuário autenticado (sem hash da senha)
+- `PUT /users/me` permite alterar `name` e `avatar`
+- `PUT /users/password` exige `currentPassword` e `newPassword` (mínimo 6 caracteres, diferente da atual)
+- `POST /users/avatar` aceita upload de imagem (JPEG, PNG, WebP) via Multer, salva localmente em `uploads/`
+- Arquivos de avatar são servidos estaticamente em `/uploads`
 
 ### Torneios
 - Apenas o **dono** pode editar/excluir/iniciar o torneio
@@ -210,6 +233,10 @@ erDiagram
 | swagger-ui-express | ^5 | UI do Swagger |
 | cors | ^2 | CORS |
 | dotenv | ^16 | Variáveis de ambiente |
+| bcryptjs | ^3 | Hash de senhas |
+| jsonwebtoken | ^9 | JWT |
+| zod | ^4 | Validação de schemas |
+| multer | ^2 | Upload de arquivos |
 | tsx | ^4 | Execução TypeScript em dev |
 | Jest | ^29 | Testes |
 | ts-jest | ^29 | Suporte TS no Jest |
