@@ -137,3 +137,30 @@
 - Gera pares [0x1, 2x3, ...]
 - Número ímpar: último jogador avança com bye (playerTwo = null)
 - Atualiza status para STARTED
+
+---
+
+## Sprint 6 — Gestão das Partidas
+
+### Modificado
+- `src/modules/matches/` — Expandido com gestão de partidas
+  - `matches.repository.ts` — Adicionado: findAllByTournament, findById, findByRound, updateResult, updatePlayerOne, updatePlayerTwo, countPendingByTournament, createHistory, create (individual), createMany sequencial
+  - `matches.service.ts` — Adicionado: listMatches, registerResult com avanço automático de vencedor e finalização do torneio
+  - `matches.controller.ts` — Adicionado: listMatches, registerResult
+  - `matches.routes.ts` — Adicionado: GET /:id/matches, PUT /:id/result + Swagger
+- `src/routes/index.ts` — Adicionado matchesResultRoutes montado em /matches
+
+### Endpoints
+| Método | Rota | Autenticação | Descrição |
+|---|---|---|---|
+| GET | /api/tournaments/:id/matches | Não | Listar partidas do torneio |
+| PUT | /api/matches/:id/result | Sim | Registrar vencedor e avançar |
+
+### Regras implementadas
+- Apenas o dono do torneio pode registrar resultado
+- Partida deve estar PENDING
+- Vencedor deve ser um dos jogadores da partida
+- Vencedor avança automaticamente para a próxima rodada
+- Partida par (even) cria confronto da próxima rodada como player_one
+- Partida ímpar (odd) preenche player_two do confronto já criado
+- Quando resta 0 partidas PENDING → torneio finalizado com campeão registrado em tournament_history

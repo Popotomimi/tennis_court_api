@@ -69,4 +69,86 @@ export const matchesService = {
       })),
     };
   },
+
+  async listMatches(tournamentId: string) {
+    const tournament = await tournamentsRepository.findById(tournamentId);
+
+    if (!tournament) {
+      throw new AppError('Torneio não encontrado', 404);
+    }
+
+    const matches = await matchesRepository.findAllByTournament(tournamentId);
+
+    return {
+      tournamentId,
+      tournamentName: tournament.name,
+      matches,
+    };
+  },
+
+  async registerResult(matchId: string, winnerId: string, userId: string) {
+    const match = await matchesRepository.findById(matchId);
+
+    if (!match) {
+      throw new AppError('Partida não encontrada', 404);
+    }
+
+    if (match.tournament.ownerId !== userId) {
+      throw new AppError('Apenas o dono do torneio pode registrar resultado', 403);
+    }
+
+    if (match.status !== 'PENDING') {
+      throw new AppError('Partida já foi finalizada', 400);
+    }
+
+    const validPlayers = [match.playerOne?.id];
+    if (match.playerTwo) {
+      validPlayers.push(match.playerTwo.id);
+    }
+
+    if (!validPlayers.includes(winnerId)) {
+      throw new AppError('Vencedor deve ser um dos jogadores da partida', 400);
+    }
+
+    const tournamentId = match.tournament.id;
+    const round = match.round;
+
+    await matchesRepository.updateResult(matchId, winnerId);
+
+    const roundMatches = await matchesRepository.findByRound(tournamentId, round);
+
+    // Only advance if there are multiple matches in this round (not the final)
+    if (roundMatches.length > 1) {
+      const matchIndex = roundMatches.findIndex((m) => m.id === matchId);
+      const nextRound = round + 1;
+      const nextMatchIndex = Math.floor(matchIndex / 2);
+
+      if (matchIndex % 2 === 0) {
+        await matchesRepository.create({
+          tournamentId,
+          playerOneId: winnerId,
+          playerTwoId: null,
+          round: nextRound,
+        });
+      } else {
+        const nextRoundMatches = await matchesRepository.findByRound(tournamentId, nextRound);
+        const nextMatch = nextRoundMatches[nextMatchIndex];
+
+        if (nextMatch) {
+          await matchesRepository.updatePlayerTwo(nextMatch.id, winnerId);
+        }
+      }
+    }
+
+    const pending = await matchesRepository.countPendingByTournament(tournamentId);
+
+    if (pending === 0) {
+      await tournamentsRepository.updateStatus(tournamentId, 'FINISHED');
+      await matchesRepository.createHistory(tournamentId, winnerId);
+    }
+
+    const updatedMatch = await matchesRepository.findById(matchId);
+
+    return updatedMatch;
+  },
 };
