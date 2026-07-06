@@ -4,3 +4,27 @@ dist/
 *.log
 .DS_Store
 uploads/
+
+# Coverage reports
+coverage/
+
+# IDE / Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# OS X
+.AppleDouble
+.LSOverride
+
+# env files (keep .env.example)
+.env.local
+.env.development
+.env.production
