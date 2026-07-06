@@ -3,7 +3,7 @@ import { authRoutes } from '../modules/auth/auth.routes';
 import { usersRoutes } from '../modules/users/users.routes';
 import { tournamentsRoutes } from '../modules/tournaments/tournaments.routes';
 import { participantsRoutes } from '../modules/participants/participants.routes';
-import { matchesRoutes } from '../modules/matches/matches.routes';
+import { matchesRoutes, matchesResultRoutes } from '../modules/matches/matches.routes';
 
 const routes = Router();
 
@@ -16,5 +16,6 @@ routes.use('/users', usersRoutes);
 routes.use('/tournaments', tournamentsRoutes);
 routes.use('/tournaments', participantsRoutes);
 routes.use('/tournaments', matchesRoutes);
+routes.use('/matches', matchesResultRoutes);
 
 export { routes };
