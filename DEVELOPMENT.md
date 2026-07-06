@@ -107,3 +107,33 @@
 | POST | /api/tournaments/:id/join | Sim | Inscrever usuário no torneio |
 | DELETE | /api/tournaments/:id/leave | Sim | Sair do torneio |
 | GET | /api/tournaments/:id/participants | Não | Listar participantes do torneio |
+
+---
+
+## Sprint 5 — Sorteio dos Confrontos
+
+### Criado
+- `src/modules/matches/` — Módulo de partidas (sorteio e gerenciamento)
+  - `matches.repository.ts` — Acesso Prisma (createMany)
+  - `matches.service.ts` — Lógica de embaralhamento, pareamento e bye
+  - `matches.controller.ts` — Handler startTournament
+  - `matches.routes.ts` — Rota + Swagger
+
+### Modificado
+- `src/modules/tournaments/tournaments.repository.ts` — Adicionado updateStatus
+- `src/modules/participants/participants.repository.ts` — Adicionado findUserIdsByTournament
+- `src/routes/index.ts` — Adicionado matchesRoutes montado em /tournaments
+
+### Endpoints
+| Método | Rota | Autenticação | Descrição |
+|---|---|---|---|
+| POST | /api/tournaments/:id/start | Sim | Iniciar torneio e gerar chaveamento |
+
+### Regras implementadas
+- Apenas o dono pode iniciar
+- Torneio precisa estar WAITING
+- Mínimo de 2 participantes
+- Embaralha participantes aleatoriamente
+- Gera pares [0x1, 2x3, ...]
+- Número ímpar: último jogador avança com bye (playerTwo = null)
+- Atualiza status para STARTED

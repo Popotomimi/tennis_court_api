@@ -29,6 +29,14 @@ export const participantsRepository = {
     });
   },
 
+  findUserIdsByTournament(tournamentId: string) {
+    return prisma.tournamentParticipant.findMany({
+      where: { tournamentId },
+      select: { userId: true },
+      orderBy: { joinedAt: 'asc' },
+    });
+  },
+
   delete(tournamentId: string, userId: string) {
     return prisma.tournamentParticipant.delete({
       where: { tournamentId_userId: { tournamentId, userId } },

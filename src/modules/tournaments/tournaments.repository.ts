@@ -61,6 +61,13 @@ export const tournamentsRepository = {
     });
   },
 
+  updateStatus(id: string, status: 'WAITING' | 'STARTED' | 'FINISHED') {
+    return prisma.tournament.update({
+      where: { id },
+      data: { status },
+    });
+  },
+
   update(
     id: string,
     data: { name?: string; description?: string | null; maxPlayers?: number },
