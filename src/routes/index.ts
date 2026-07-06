@@ -5,6 +5,7 @@ import { tournamentsRoutes } from '../modules/tournaments/tournaments.routes';
 import { participantsRoutes } from '../modules/participants/participants.routes';
 import { matchesRoutes, matchesResultRoutes } from '../modules/matches/matches.routes';
 import { statisticsRoutes } from '../modules/statistics/statistics.routes';
+import { historyRoutes } from '../modules/history/history.routes';
 
 const routes = Router();
 
@@ -19,5 +20,6 @@ routes.use('/tournaments', participantsRoutes);
 routes.use('/tournaments', matchesRoutes);
 routes.use('/matches', matchesResultRoutes);
 routes.use('/statistics', statisticsRoutes);
+routes.use('/history', historyRoutes);
 
 export { routes };

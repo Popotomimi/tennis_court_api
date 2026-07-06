@@ -194,3 +194,27 @@
   "winRate": 75
 }
 ```
+
+---
+
+## Sprint 9 — Histórico
+
+### Criado
+- `src/modules/history/` — Módulo de histórico
+  - `history.repository.ts` — Queries Prisma (tournament_history + joins)
+  - `history.service.ts` — Formatação dos dados
+  - `history.controller.ts` — Handlers findAll, findById
+  - `history.routes.ts` — Rotas + Swagger
+
+### Modificado
+- `src/routes/index.ts` — Adicionado historyRoutes montado em /history
+
+### Endpoints
+| Método | Rota | Autenticação | Descrição |
+|---|---|---|---|
+| GET | /api/history | Não | Listar torneios finalizados (paginado) |
+| GET | /api/history/:id | Não | Detalhes completos de um torneio finalizado |
+
+### Dados retornados
+**GET /api/history** — Lista paginada com nome, campeão, data e total de participantes
+**GET /api/history/:id** — Detalhes com owner, participantes, partidas (com jogadores e vencedores)
