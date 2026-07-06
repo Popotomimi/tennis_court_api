@@ -61,3 +61,28 @@
 | PUT | /api/users/me | Sim | Atualiza nome do perfil |
 | PUT | /api/users/password | Sim | Altera a senha |
 | POST | /api/users/avatar | Sim | Upload de avatar |
+
+---
+
+## Sprint 3 — CRUD de Torneios
+
+### Criado
+- `src/modules/tournaments/` — Módulo completo de torneios
+  - `dto/create-tournament.dto.ts` — Schema Zod para criação
+  - `dto/update-tournament.dto.ts` — Schema Zod para atualização
+  - `tournaments.controller.ts` — Handlers create, findAll, findById, update, remove
+  - `tournaments.service.ts` — Regras de negócio (validação de dono, status WAITING)
+  - `tournaments.repository.ts` — Acesso Prisma (CRUD + paginação + contagem)
+  - `tournaments.routes.ts` — Rotas + Swagger
+
+### Modificado
+- `src/routes/index.ts` — Adicionado tournamentsRoutes
+
+### Endpoints
+| Método | Rota | Autenticação | Descrição |
+|---|---|---|---|
+| POST | /api/tournaments | Sim | Criar torneio |
+| GET | /api/tournaments | Não | Listar torneios (paginado) |
+| GET | /api/tournaments/:id | Não | Buscar torneio por ID |
+| PUT | /api/tournaments/:id | Sim | Editar torneio (apenas dono) |
+| DELETE | /api/tournaments/:id | Sim | Excluir torneio (apenas dono) |
