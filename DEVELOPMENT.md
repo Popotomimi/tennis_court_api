@@ -218,3 +218,55 @@
 ### Dados retornados
 **GET /api/history** — Lista paginada com nome, campeão, data e total de participantes
 **GET /api/history/:id** — Detalhes com owner, participantes, partidas (com jogadores e vencedores)
+
+---
+
+## Sprint 10 — Testes
+
+### Configuração
+- `jest.config.ts` — Configuração do Jest com preset ts-jest, cobertura mínima de 70%
+- Dependências instaladas: `jest`, `ts-jest`, `@types/jest`, `supertest`, `@types/supertest`
+
+### Testes Unitários (Services)
+| Módulo | Arquivo | Cobertura |
+|---|---|---|
+| Auth | `src/modules/auth/__tests__/auth.service.test.ts` | 100% |
+| Users | `src/modules/users/__tests__/users.service.test.ts` | 100% |
+| Tournaments | `src/modules/tournaments/__tests__/tournaments.service.test.ts` | 100% |
+| Participants | `src/modules/participants/__tests__/participants.service.test.ts` | 100% |
+| Matches | `src/modules/matches/__tests__/matches.service.test.ts` | 100% |
+| Statistics | `src/modules/statistics/__tests__/statistics.service.test.ts` | 100% |
+| History | `src/modules/history/__tests__/history.service.test.ts` | 100% |
+
+### Testes Unitários (Controllers)
+| Módulo | Arquivo | Cobertura |
+|---|---|---|
+| Auth | `src/modules/auth/__tests__/auth.controller.test.ts` | 100% |
+| Users | `src/modules/users/__tests__/users.controller.test.ts` | 100% |
+| Tournaments | `src/modules/tournaments/__tests__/tournaments.controller.test.ts` | 100% |
+| Participants | `src/modules/participants/__tests__/participants.controller.test.ts` | 100% |
+| Matches | `src/modules/matches/__tests__/matches.controller.test.ts` | 100% |
+| Statistics | `src/modules/statistics/__tests__/statistics.controller.test.ts` | 100% |
+| History | `src/modules/history/__tests__/history.controller.test.ts` | 100% |
+
+### Testes de Middleware
+| Arquivo | Cobertura |
+|---|---|
+| `src/middlewares/__tests__/auth.middleware.test.ts` | 100% |
+| `src/middlewares/__tests__/errorHandler.test.ts` | 100% |
+
+### Testes de Integração
+| Módulo | Arquivo | Descrição |
+|---|---|---|
+| Auth | `src/modules/auth/__tests__/auth.integration.test.ts` | POST /api/auth/register e POST /api/auth/login |
+| Tournaments | `src/modules/tournaments/__tests__/tournaments.integration.test.ts` | CRUD completo via API com supertest |
+
+### Cobertura Global
+| Métrica | Resultado | Threshold |
+|---|---|---|
+| Statements | 91.07% | >= 70% ✅ |
+| Branches | 80.15% | >= 70% ✅ |
+| Functions | 100% | >= 70% ✅ |
+| Lines | 90.93% | >= 70% ✅ |
+
+**Total: 18 suites, 89 testes, 0 falhas**
