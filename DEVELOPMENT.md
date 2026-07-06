@@ -86,3 +86,24 @@
 | GET | /api/tournaments/:id | Não | Buscar torneio por ID |
 | PUT | /api/tournaments/:id | Sim | Editar torneio (apenas dono) |
 | DELETE | /api/tournaments/:id | Sim | Excluir torneio (apenas dono) |
+
+---
+
+## Sprint 4 — Participantes
+
+### Criado
+- `src/modules/participants/` — Módulo completo de participantes
+  - `participants.controller.ts` — Handlers join, leave, listParticipants
+  - `participants.service.ts` — Regras de negócio (limite de jogadores, duplicidade, status WAITING)
+  - `participants.repository.ts` — Acesso Prisma (create, findByTournamentAndUser, countByTournament, findParticipantsByTournament, delete)
+  - `participants.routes.ts` — Rotas + Swagger
+
+### Modificado
+- `src/routes/index.ts` — Adicionado participantsRoutes montado em /tournaments
+
+### Endpoints
+| Método | Rota | Autenticação | Descrição |
+|---|---|---|---|
+| POST | /api/tournaments/:id/join | Sim | Inscrever usuário no torneio |
+| DELETE | /api/tournaments/:id/leave | Sim | Sair do torneio |
+| GET | /api/tournaments/:id/participants | Não | Listar participantes do torneio |
