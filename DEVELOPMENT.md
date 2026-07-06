@@ -164,3 +164,57 @@
 - Partida par (even) cria confronto da próxima rodada como player_one
 - Partida ímpar (odd) preenche player_two do confronto já criado
 - Quando resta 0 partidas PENDING → torneio finalizado com campeão registrado em tournament_history
+
+---
+
+## Sprint 8 — Estatísticas
+
+### Criado
+- `src/modules/statistics/` — Módulo de estatísticas
+  - `statistics.repository.ts` — Queries de contagem (torneios jogados, vencidos, partidas jogadas, vencidas)
+  - `statistics.service.ts` — Cálculo com winRate arredondado
+  - `statistics.controller.ts` — Handler getMe
+  - `statistics.routes.ts` — Rota + Swagger
+
+### Modificado
+- `src/routes/index.ts` — Adicionado statisticsRoutes montado em /statistics
+
+### Endpoints
+| Método | Rota | Autenticação | Descrição |
+|---|---|---|---|
+| GET | /api/statistics/me | Sim | Estatísticas do usuário autenticado |
+
+### Dados retornados
+```json
+{
+  "tournamentsPlayed": 11,
+  "tournamentsWon": 2,
+  "matchesPlayed": 8,
+  "matchesWon": 6,
+  "winRate": 75
+}
+```
+
+---
+
+## Sprint 9 — Histórico
+
+### Criado
+- `src/modules/history/` — Módulo de histórico
+  - `history.repository.ts` — Queries Prisma (tournament_history + joins)
+  - `history.service.ts` — Formatação dos dados
+  - `history.controller.ts` — Handlers findAll, findById
+  - `history.routes.ts` — Rotas + Swagger
+
+### Modificado
+- `src/routes/index.ts` — Adicionado historyRoutes montado em /history
+
+### Endpoints
+| Método | Rota | Autenticação | Descrição |
+|---|---|---|---|
+| GET | /api/history | Não | Listar torneios finalizados (paginado) |
+| GET | /api/history/:id | Não | Detalhes completos de um torneio finalizado |
+
+### Dados retornados
+**GET /api/history** — Lista paginada com nome, campeão, data e total de participantes
+**GET /api/history/:id** — Detalhes com owner, participantes, partidas (com jogadores e vencedores)
