@@ -1,4 +1,5 @@
 import { z } from 'zod/v4';
+import { sportSchema } from './sport';
 
 export const createTournamentSchema = z.object({
   name: z
@@ -11,6 +12,7 @@ export const createTournamentSchema = z.object({
     .trim()
     .max(500, 'Descrição deve ter no máximo 500 caracteres')
     .optional(),
+  sport: sportSchema.default('TENNIS'),
   maxPlayers: z
     .number()
     .int()

@@ -10,6 +10,7 @@ const fakeTournament = {
   ownerId: 'owner-1',
   name: 'Meu Torneio',
   description: 'Desc',
+  sport: 'TENNIS' as const,
   maxPlayers: 8,
   status: 'WAITING' as const,
   createdAt: new Date(),
@@ -27,10 +28,28 @@ describe('TournamentsService', () => {
 
       const result = await tournamentsService.create({
         name: 'Meu Torneio',
+        sport: 'TENNIS',
         maxPlayers: 8,
         ownerId: 'owner-1',
       });
       expect(result.name).toBe('Meu Torneio');
+    });
+
+    it('deve repassar sport ao repository', async () => {
+      MockRepo.create.mockResolvedValue({
+        ...fakeTournament,
+        sport: 'PICKLEBALL' as const,
+      } as any);
+
+      await tournamentsService.create({
+        name: 'Torneio Pickleball',
+        sport: 'PICKLEBALL',
+        maxPlayers: 8,
+        ownerId: 'owner-1',
+      });
+      expect(MockRepo.create).toHaveBeenCalledWith(
+        expect.objectContaining({ sport: 'PICKLEBALL' }),
+      );
     });
   });
 
@@ -67,6 +86,24 @@ describe('TournamentsService', () => {
 
       const result = await tournamentsService.update('t-1', 'owner-1', { name: 'Editado' });
       expect(result.name).toBe('Editado');
+    });
+
+    it('deve repassar sport ao atualizar', async () => {
+      MockRepo.findById.mockResolvedValue(fakeTournament as any);
+      MockRepo.update.mockResolvedValue({
+        ...fakeTournament,
+        sport: 'BEACH_TENNIS' as const,
+      } as any);
+
+      const result = await tournamentsService.update('t-1', 'owner-1', {
+        sport: 'BEACH_TENNIS',
+      });
+
+      expect(MockRepo.update).toHaveBeenCalledWith(
+        't-1',
+        expect.objectContaining({ sport: 'BEACH_TENNIS' }),
+      );
+      expect(result).toMatchObject({ sport: 'BEACH_TENNIS' });
     });
 
     it('deve rejeitar se nao for dono', async () => {

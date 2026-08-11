@@ -4,6 +4,7 @@ export const tournamentsRepository = {
   create(data: {
     name: string;
     description?: string;
+    sport: 'TENNIS' | 'BEACH_TENNIS' | 'PICKLEBALL';
     maxPlayers: number;
     ownerId: string;
   }) {
@@ -11,6 +12,7 @@ export const tournamentsRepository = {
       data: {
         name: data.name,
         description: data.description,
+        sport: data.sport,
         maxPlayers: data.maxPlayers,
         ownerId: data.ownerId,
       },
@@ -70,7 +72,12 @@ export const tournamentsRepository = {
 
   update(
     id: string,
-    data: { name?: string; description?: string | null; maxPlayers?: number },
+    data: {
+      name?: string;
+      description?: string | null;
+      sport?: 'TENNIS' | 'BEACH_TENNIS' | 'PICKLEBALL';
+      maxPlayers?: number;
+    },
   ) {
     return prisma.tournament.update({
       where: { id },

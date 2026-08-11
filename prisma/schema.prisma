@@ -31,6 +31,7 @@ model Tournament {
   ownerId     String           @map("owner_id")
   name        String
   description String?
+  sport       Sport            @default(TENNIS)
   maxPlayers  Int              @map("max_players")
   status      TournamentStatus @default(WAITING)
   createdAt   DateTime         @default(now()) @map("created_at")
@@ -48,6 +49,12 @@ enum TournamentStatus {
   WAITING
   STARTED
   FINISHED
+}
+
+enum Sport {
+  TENNIS
+  BEACH_TENNIS
+  PICKLEBALL
 }
 
 model TournamentParticipant {
