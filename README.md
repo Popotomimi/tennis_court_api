@@ -1,6 +1,6 @@
 # Tennis League API
 
-API REST para gerenciamento de torneios de tênis amadores. Cadastro de usuários, criação de torneios, sorteio automático de confrontos (mata-mata), registro de resultados, histórico de campeões e estatísticas individuais.
+API REST para gerenciamento de torneios esportivos amadores. Cadastro de usuários, criação de torneios de **tênis, beach tennis e pickleball**, sorteio automático de confrontos (mata-mata), registro de resultados, histórico de campeões e estatísticas individuais. Arquitetura genérica preparada para novos esportes.
 
 ## Stack
 
@@ -23,8 +23,8 @@ API REST para gerenciamento de torneios de tênis amadores. Cadastro de usuário
 
 - **Autenticação** — Cadastro e login com hash bcrypt (10 rounds) e JWT (7 dias)
 - **Perfil** — Atualização de nome, alteração de senha, upload de avatar (JPEG/PNG/WebP, até 2MB)
-- **Torneios** — CRUD completo com paginação, validação de dono, controle de status (WAITING → STARTED → FINISHED)
-- **Participantes** — Inscrição e saída com validação de limite e duplicidade
+- **Torneios** — CRUD completo com paginação, validação de dono, modalidade esportiva (TENNIS, BEACH_TENNIS, PICKLEBALL, padrão TENNIS) e controle de status (WAITING → STARTED → FINISHED)
+- **Participantes** — Inscrição e saída com validação de limite e duplicidade; o dono não pode participar do próprio torneio
 - **Sorteio** — Geração automática dos confrontos (Fisher-Yates + pareamento sequencial com suporte a bye)
 - **Partidas** — Registro de resultado com avanço automático do vencedor à próxima rodada
 - **Histórico** — Torneios finalizados com detalhes de partidas, participantes e campeão
@@ -73,11 +73,11 @@ src/
 | PUT | `/api/users/password` | Sim | Alterar senha |
 | POST | `/api/users/avatar` | Sim | Upload avatar |
 | GET | `/api/tournaments` | — | Listar torneios |
-| POST | `/api/tournaments` | Sim | Criar torneio |
+| POST | `/api/tournaments` | Sim | Criar torneio (campo `sport` opcional) |
 | GET | `/api/tournaments/:id` | — | Detalhes do torneio |
-| PUT | `/api/tournaments/:id` | Sim | Editar torneio |
+| PUT | `/api/tournaments/:id` | Sim | Editar torneio (inclui `sport`) |
 | DELETE | `/api/tournaments/:id` | Sim | Excluir torneio |
-| POST | `/api/tournaments/:id/join` | Sim | Inscrever-se |
+| POST | `/api/tournaments/:id/join` | Sim | Inscrever-se (dono bloqueado) |
 | DELETE | `/api/tournaments/:id/leave` | Sim | Sair do torneio |
 | GET | `/api/tournaments/:id/participants` | — | Listar participantes |
 | POST | `/api/tournaments/:id/start` | Sim | Iniciar torneio |
@@ -105,21 +105,21 @@ tournaments ──1:1──> tournament_history
 ### Tabelas
 
 - **users** — id (UUID), name, email (UNIQUE), password (bcrypt), avatar?, created_at, updated_at
-- **tournaments** — id, owner_id (FK), name, description?, max_players, status (WAITING/STARTED/FINISHED)
+- **tournaments** — id, owner_id (FK), name, description?, sport (TENNIS/BEACH_TENNIS/PICKLEBALL, padrão TENNIS), max_players, status (WAITING/STARTED/FINISHED)
 - **tournament_participants** — id, tournament_id (FK), user_id (FK), UNIQUE(tournament_id, user_id)
-- **matches** — id, tournament_id (FK), player_one_id (FK), player_two_id? (FK, bye), winner_id? (FK), round, status (PENDING/FINISHED)
-- **tournament_history** — id, tournament_id (FK, UNIQUE), champion_id (FK), finished_at
+- **matches** — id, tournament_id (FK), player_one_id (FK), player_two_id? (FK, bye), winner_id? (FK), round, status (PENDING/FINISHED) — genérico, sem vínculo com modalidade
+- **tournament_history** — id, tournament_id (FK, UNIQUE), champion_id (FK), finished_at — genérico
 
 ## Testes
 
-89 testes, 18 suites, 0 falhas.
+98 testes, 18 suites, 0 falhas.
 
 | Tipo | Cobertura |
 |---|---|
-| Statements | 91.07% |
-| Branches | 80.15% |
+| Statements | 91.11% |
+| Branches | 80.46% |
 | Functions | 100% |
-| Lines | 90.93% |
+| Lines | 90.97% |
 
 - Testes unitários de **services** e **controllers** em todos os 7 módulos
 - Testes de **middleware** (auth, errorHandler)
