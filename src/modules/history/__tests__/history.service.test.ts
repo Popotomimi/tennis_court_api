@@ -16,6 +16,7 @@ describe('HistoryService', () => {
         {
           id: 't-1',
           name: 'Torneio 1',
+          sport: 'TENNIS',
           history: {
             id: 'h-1',
             finishedAt: new Date('2025-01-01'),
@@ -30,6 +31,7 @@ describe('HistoryService', () => {
 
       expect(result.data).toHaveLength(1);
       expect(result.data[0].name).toBe('Torneio 1');
+      expect(result.data[0].sport).toBe('TENNIS');
       expect(result.data[0].champion.name).toBe('Campeão');
       expect(result.total).toBe(1);
     });
@@ -45,6 +47,7 @@ describe('HistoryService', () => {
           id: 't-1',
           name: 'Torneio',
           description: 'Desc',
+          sport: 'BEACH_TENNIS',
           maxPlayers: 8,
           status: 'FINISHED',
           owner: { id: 'o-1', name: 'Dono' },
@@ -60,6 +63,7 @@ describe('HistoryService', () => {
       const result = await historyService.findById('h-1');
 
       expect(result.name).toBe('Torneio');
+      expect(result.sport).toBe('BEACH_TENNIS');
       expect(result.participants).toHaveLength(2);
       expect(result.matches).toHaveLength(1);
       expect(result.champion.name).toBe('Campeão');

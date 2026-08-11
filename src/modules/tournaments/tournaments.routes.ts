@@ -30,6 +30,14 @@ const tournamentsRoutes = Router();
  *               description:
  *                 type: string
  *                 maxLength: 500
+ *               sport:
+ *                 type: string
+ *                 enum:
+ *                   - TENNIS
+ *                   - BEACH_TENNIS
+ *                   - PICKLEBALL
+ *                 default: TENNIS
+ *                 description: Modalidade esportiva do torneio
  *               maxPlayers:
  *                 type: integer
  *                 minimum: 2
@@ -125,6 +133,13 @@ tournamentsRoutes.get('/:id', tournamentsController.findById);
  *                 type: string
  *                 maxLength: 500
  *                 nullable: true
+ *               sport:
+ *                 type: string
+ *                 enum:
+ *                   - TENNIS
+ *                   - BEACH_TENNIS
+ *                   - PICKLEBALL
+ *                 description: Modalidade esportiva do torneio
  *               maxPlayers:
  *                 type: integer
  *                 minimum: 2

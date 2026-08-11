@@ -10,6 +10,10 @@ export const participantsService = {
       throw new AppError('Torneio não encontrado', 404);
     }
 
+    if (tournament.owner.id === userId) {
+      throw new AppError('O dono do torneio não pode participar do próprio torneio', 400);
+    }
+
     if (tournament.status !== 'WAITING') {
       throw new AppError('Torneio já foi iniciado ou finalizado', 400);
     }

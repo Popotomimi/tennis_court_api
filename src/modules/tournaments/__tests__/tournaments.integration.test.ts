@@ -13,6 +13,7 @@ const fakeTournament = {
   id: 't-1',
   name: 'Torneio Teste',
   description: null,
+  sport: 'TENNIS',
   maxPlayers: 8,
   status: 'WAITING',
   ownerId: 'user-1',
@@ -43,11 +44,49 @@ describe('POST /api/tournaments - Integração', () => {
     expect(res.body.name).toBe('Torneio Teste');
   });
 
+  it('deve aplicar sport TENNIS como default quando omitido', async () => {
+    MockService.create.mockResolvedValue(fakeTournament as any);
+
+    const res = await request(app)
+      .post('/api/tournaments')
+      .set('Authorization', 'Bearer token')
+      .send({ name: 'Torneio Teste', maxPlayers: 8 });
+
+    expect(res.status).toBe(201);
+    expect(MockService.create).toHaveBeenCalledWith(
+      expect.objectContaining({ sport: 'TENNIS', ownerId: 'user-1' }),
+    );
+  });
+
+  it('deve criar torneio com sport informado', async () => {
+    MockService.create.mockResolvedValue({ ...fakeTournament, sport: 'BEACH_TENNIS' } as any);
+
+    const res = await request(app)
+      .post('/api/tournaments')
+      .set('Authorization', 'Bearer token')
+      .send({ name: 'Torneio Teste', sport: 'BEACH_TENNIS', maxPlayers: 8 });
+
+    expect(res.status).toBe(201);
+    expect(MockService.create).toHaveBeenCalledWith(
+      expect.objectContaining({ sport: 'BEACH_TENNIS' }),
+    );
+    expect(res.body.sport).toBe('BEACH_TENNIS');
+  });
+
   it('deve retornar 400 para dados invalidos', async () => {
     const res = await request(app)
       .post('/api/tournaments')
       .set('Authorization', 'Bearer token')
       .send({ name: '' });
+
+    expect(res.status).toBe(400);
+  });
+
+  it('deve retornar 400 para sport invalido', async () => {
+    const res = await request(app)
+      .post('/api/tournaments')
+      .set('Authorization', 'Bearer token')
+      .send({ name: 'Torneio Teste', sport: 'FUTEBOL', maxPlayers: 8 });
 
     expect(res.status).toBe(400);
   });
@@ -80,6 +119,7 @@ describe('GET /api/tournaments/:id - Integração', () => {
 
     expect(res.status).toBe(200);
     expect(res.body.id).toBe('t-1');
+    expect(res.body.sport).toBe('TENNIS');
   });
 });
 

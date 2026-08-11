@@ -5,6 +5,7 @@ export const tournamentsService = {
   async create(data: {
     name: string;
     description?: string;
+    sport: 'TENNIS' | 'BEACH_TENNIS' | 'PICKLEBALL';
     maxPlayers: number;
     ownerId: string;
   }) {
@@ -34,6 +35,7 @@ export const tournamentsService = {
     data: {
       name?: string;
       description?: string | null;
+      sport?: 'TENNIS' | 'BEACH_TENNIS' | 'PICKLEBALL';
       maxPlayers?: number;
     },
   ) {
