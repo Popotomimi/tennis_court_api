@@ -1,11 +1,20 @@
 import { prisma } from '../../shared/prisma';
 
+function userScope(userId: string) {
+  return {
+    OR: [{ ownerId: userId }, { participants: { some: { userId } } }],
+  };
+}
+
 export const historyRepository = {
-  findAllFinished(page: number, limit: number) {
+  findFinishedByUser(userId: string, page: number, limit: number) {
     const skip = (page - 1) * limit;
 
     return prisma.tournament.findMany({
-      where: { status: 'FINISHED' },
+      where: {
+        status: 'FINISHED',
+        ...userScope(userId),
+      },
       skip,
       take: limit,
       orderBy: { updatedAt: 'desc' },
@@ -24,9 +33,12 @@ export const historyRepository = {
     });
   },
 
-  countAll() {
+  countByUser(userId: string) {
     return prisma.tournament.count({
-      where: { status: 'FINISHED' },
+      where: {
+        status: 'FINISHED',
+        ...userScope(userId),
+      },
     });
   },
 

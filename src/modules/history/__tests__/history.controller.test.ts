@@ -47,6 +47,7 @@ describe('HistoryController', () => {
 
       await historyController.findAll(req, res, next);
 
+      expect(MockService.findAll).toHaveBeenCalledWith('user-1', 1, 10);
       expect(res.json).toHaveBeenCalledWith(
         expect.objectContaining({ total: 1 }),
       );
@@ -66,6 +67,7 @@ describe('HistoryController', () => {
 
       await historyController.findById(req, res, next);
 
+      expect(MockService.findById).toHaveBeenCalledWith('h-1', 'user-1');
       expect(res.json).toHaveBeenCalledWith(
         expect.objectContaining({ name: 'Torneio Finalizado' }),
       );

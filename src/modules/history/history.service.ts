@@ -2,10 +2,10 @@ import { historyRepository } from './history.repository';
 import { AppError } from '../../shared/errors/AppError';
 
 export const historyService = {
-  async findAll(page: number, limit: number) {
+  async findAll(userId: string, page: number, limit: number) {
     const [data, total] = await Promise.all([
-      historyRepository.findAllFinished(page, limit),
-      historyRepository.countAll(),
+      historyRepository.findFinishedByUser(userId, page, limit),
+      historyRepository.countByUser(userId),
     ]);
 
     const formatted = data.map((t) => ({
@@ -21,10 +21,19 @@ export const historyService = {
     return { data: formatted, total, page, limit };
   },
 
-  async findById(id: string) {
+  async findById(id: string, userId: string) {
     const history = await historyRepository.findById(id);
 
     if (!history) {
+      throw new AppError('Histórico não encontrado', 404);
+    }
+
+    const isOwner = history.tournament.ownerId === userId;
+    const isParticipant = history.tournament.participants.some(
+      (p) => p.userId === userId,
+    );
+
+    if (!isOwner && !isParticipant) {
       throw new AppError('Histórico não encontrado', 404);
     }
 
