@@ -36,12 +36,15 @@ describe('ParticipantsService', () => {
       expect(result).toBeDefined();
     });
 
-    it('deve rejeitar inscricao do dono no proprio torneio', async () => {
+    it('deve permitir inscricao do dono no proprio torneio', async () => {
       MockTournRepo.findById.mockResolvedValue(fakeTournament as any);
+      MockPartRepo.findByTournamentAndUser.mockResolvedValue(null);
+      MockPartRepo.countByTournament.mockResolvedValue(1);
+      MockPartRepo.create.mockResolvedValue({} as any);
 
-      await expect(
-        participantsService.join('t-1', 'owner-1'),
-      ).rejects.toThrow('O dono do torneio não pode participar do próprio torneio');
+      const result = await participantsService.join('t-1', 'owner-1');
+      expect(result).toBeDefined();
+      expect(MockPartRepo.create).toHaveBeenCalledWith('t-1', 'owner-1');
     });
 
     it('deve rejeitar se torneio ja iniciado', async () => {

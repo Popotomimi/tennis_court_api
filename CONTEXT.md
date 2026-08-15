@@ -185,11 +185,15 @@ erDiagram
 - Quando resta 1 jogador → torneio finalizado, campeão registrado em `tournament_history`
 
 ### Estatísticas
-- `tournamentsPlayed` — total de torneios que participou
-- `tournamentsWon` — total de torneios que venceu
-- `matchesPlayed` — total de partidas disputadas
-- `matchesWon` — total de partidas vencidas
-- `winRate` — (matchesWon / matchesPlayed) * 100
+- `tournamentsPlayed` - total de torneios que participou
+- `tournamentsWon` - total de torneios que venceu
+- `matchesPlayed` - total de partidas disputadas
+- `matchesWon` - total de partidas vencidas
+- `winRate` - (matchesWon / matchesPlayed) * 100
+
+### Histórico
+- `GET /history` requer autenticação e retorna apenas torneios finalizados em que o usuário participou OU criou
+- `GET /history/:id` requer autenticação e retorna 404 se o usuário não participou nem criou o torneio
 
 ---
 
